@@ -3,7 +3,7 @@ name: ShoppingBot CI
 on:
   push:
     branches:
-      - main  # or the name of your primary branch
+      - main
   pull_request:
     branches:
       - main
@@ -14,6 +14,9 @@ jobs:
     strategy:
       matrix:
         python-version: [3.8, 3.9, 3.10.11]
+
+    env:  # Environment Variables
+      API_KEY: ${{ secrets.API_KEY }}
 
     steps:
     - uses: actions/checkout@v2
@@ -38,11 +41,36 @@ jobs:
         pip install setuptools
         pip install -e .
 
+    # Browser Automation Testing
+    - name: Setup browser driver (e.g., ChromeDriver)
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y chromium-chromedriver
+        sudo ln -s /usr/lib/chromium-browser/chromedriver /usr/bin
+
     - name: Format code with Black
       run: black --check .
 
     - name: Lint with pylint
       run: pylint $(git ls-files '*.py')
-  
-    - name: Run tests
-      run: python -m unittest discover tests  # Replace with your test command if different
+
+    - name: Security scan with Bandit
+      run: |
+        pip install bandit
+        bandit -r .
+
+    - name: Run tests with coverage
+      run: |
+        pip install coverage
+        coverage run -m unittest discover tests
+
+    - name: Report coverage
+      run: coverage report
+
+    # Dockerization
+    - name: Build Docker image
+      run: docker build . -t shoppingbot:latest
+
+    - name: Run Docker container
+      run: docker run shoppingbot:latest <some-command>
+
