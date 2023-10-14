@@ -16,7 +16,11 @@ jobs:
         python-version: [3.8, 3.9, 3.10.11]
 
     env:  # Environment Variables
-      API_KEY: ${{ secrets.API_KEY }}
+        SHOPPINGBOT_URL: ${{ secrets.SHOPPINGBOT_URL }}
+        SHOPPINGBOT_LOGIN_URL: ${{ secrets.SHOPPINGBOT_LOGIN_URL }}
+        SHOPPINGBOT_PRODUCT: ${{ secrets.SHOPPINGBOT_PRODUCT }}
+        SHOPPINGBOT_USERNAME: ${{ secrets.SHOPPINGBOT_USERNAME }}
+        SHOPPINGBOT_PASSWORD: ${{ secrets.SHOPPINGBOT_PASSWORD }}
 
     steps:
     - uses: actions/checkout@v2
